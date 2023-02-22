@@ -24,8 +24,6 @@ app.use(passport.initialize());
 
 var router = express.Router();
 
-console.log(process.env.SECRET_KEY)
-
 function getJSONObjectForMovieRequirement(req) {
     var json = {
         headers: "No headers",
