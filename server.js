@@ -73,6 +73,68 @@ router.post('/signin', (req, res) => {
     }
 });
 
+router.get('/movies', (req, res) => {
+    var movie = db.findOneMovie(req.body.title);
+
+    if(!movie){
+        res.status(404).sendFile({success: false, msg: 'Query failed. Movie not found.'});
+    } else {
+        if(req.body.title == movie.title) {
+            var movieToken = { id: movie.title };
+            var token = jwt.sign(movieToken, process.env.SECRET_KEY);
+            res.status(200).json({success: true, msg: 'GET Movies: ' + movie.title, token});
+        }
+        else{
+            res.status(404).sendStatus({success: false, msg: 'Query failed.'});
+        }
+    }
+});
+
+router.post('/movies', (req, res) => {
+    if (!req.body.title) {
+        res.json({success: false, msg: 'Please include both username and password to signup.'});
+    } else {
+        var newMovie = {
+            title: req.body.title
+        };
+        var token = jwt.sign(newMovie, process.env.SECRET_KEY);
+        db.saveMovie(newMovie); //no duplicate checking
+        res.status(200).json({success: true, msg: 'Movie saved.', token});
+    }
+});
+
+router.delete('/movies', authController.isAuthenticated, (req, res) => {
+    var movie = db.findOneMovie(req.body.title);
+
+    if(!movie){
+        res.status(404).sendStatus({success: false, msg: 'Query failed. Movie not found.'});
+    } else{
+        if(req.body.title == movie.title){
+            db.removeMovie(movie);
+            res.status(200).json({success: true, msg: 'Movie: ' + movie.title + ' deleted'});
+        }
+        else{
+        res.status(404).sendStatus({success: false, msg: 'Query failed. Movie not found.'});
+        }
+    }
+});
+
+router.put('/movies', authJwtController.isAuthenticated, (req, res) => {
+    var movie = db.findOneMovie(req.body.title);
+
+    if(!movie){
+        res.status(404).sendStatus({success: false, msg: 'Query failed. Movie not found.'});
+    } else{
+        if(req.body.title == movie.title){
+            db.updateMovie(movie);
+            res.status(200).json({success: true, msg: 'Movie updated.'});
+        }
+        else{
+        res.status(404).sendStatus({success: false, msg: 'Query failed. Movie not found.'});
+        }
+    }
+});
+
 router.route('/testcollection')
     .delete(authController.isAuthenticated, (req, res) => {
         console.log(req.body);
