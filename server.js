@@ -127,7 +127,8 @@ router.put('/movies', authJwtController.isAuthenticated, (req, res) => {
     } else{
         if(req.body.title == movie.title){
             db.updateMovie(movie);
-            res.status(200).json({success: true, msg: 'Movie updated.'});
+            var token = jwt.sign(movie, process.env.SECRET_KEY)
+            res.status(200).json({success: true, msg: 'Movie updated.', token});
         }
         else{
         res.status(404).sendStatus({success: false, msg: 'Query failed. Movie not found.'});
