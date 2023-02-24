@@ -60,7 +60,7 @@ router.post('/signin', (req, res) => {
     var user = db.findOne(req.body.username);
 
     if (!user) {
-        res.status(401).send({success: false, message: 'Authentication failed. User not found.'});
+        res.status(401).send({success: false, message: 'Login failed. User not found.'});
     } else {
         if (req.body.password == user.password) {
             var userToken = { id: user.id, username: user.username };
@@ -68,7 +68,7 @@ router.post('/signin', (req, res) => {
             res.json ({success: true, token: 'JWT ' + token});
         }
         else {
-            res.status(401).send({success: false, message: 'Authentication failed.'});
+            res.status(401).send({success: false, message: 'Login failed.'});
         }
     }
 });
@@ -122,10 +122,10 @@ router.put('/movies', authJwtController.isAuthenticated, (req, res) => {
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
     } else{
         if(req.body.title == movie.title){
-            db.updateMovie(movie);
+            db.updateMovie(movie.id, movie);
             var movieToken = {title: movie.title};
             var token = jwt.sign(movieToken, process.env.SECRET_KEY)
-            res.status(200).json({success: true, message: 'movie updated', token});
+            res.status(200).json({success: true, message: 'movie updated'});
         }
         else{
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
