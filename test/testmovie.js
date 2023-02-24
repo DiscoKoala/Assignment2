@@ -72,7 +72,7 @@ describe('Test Movies Routes', () => {
     });
 
     //Test the PUT route
-    describe('/PUT movies', () => {
+    describe('PUT movies', () => {
         it('it should return movie updated', (done) => {
         chai.request(server)
             .post('/signup')
