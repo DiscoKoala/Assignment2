@@ -8,6 +8,7 @@ module.exports = function () {
     return {
         userList: [],
         movieList: [],
+
         /*
          * Save the user inside the "db".
          */
@@ -16,6 +17,7 @@ module.exports = function () {
             this.userList.push(user);
             return 1;
         },
+
         /*
          * Retrieve a movie with a given id or return all the movies if the id is undefined.
          */
@@ -29,6 +31,7 @@ module.exports = function () {
                 return this.userList;
             }
         },
+
         findOne: function (name) {
             if (name) {
                 return this.userList.find(function (element) {
@@ -39,6 +42,7 @@ module.exports = function () {
                 return this.userList;
             }
         },
+
         /*
          * Delete a movie with the given id.
          */
@@ -54,6 +58,7 @@ module.exports = function () {
             });
             return found;
         },
+
         /*
          * Update a movie with the given id
          */
@@ -98,7 +103,7 @@ module.exports = function () {
             var found = 0;
             this.movieList = this.movieList.filter(function (element) {
                 if (element.id === id) {
-                    this.movieList.remove(movie);
+                    this.movieList.slice(element);
                     found = 1;
                 }
                 else {
@@ -122,7 +127,9 @@ module.exports = function () {
         findOneMovie: function (name) {
             if (name) {
                 return this.movieList.find(function (element) {
-                    return element.title === name;
+                    if(element.title === name){
+                        return element;
+                    }
                 });
             }
             else {

@@ -92,7 +92,8 @@ router.get('/movies', (req, res) => {
 
 router.post('/movies', (req, res) => {
     var newMovie = {
-        title: req.body.title
+        title: req.body.title,
+        id: undefined
     };
     // var token = jwt.sign(newMovie, process.env.SECRET_KEY);
     db.saveMovie(newMovie); //no duplicate checking
@@ -106,7 +107,7 @@ router.delete('/movies', authController.isAuthenticated, (req, res) => {
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
     } else{
         if(req.body.title == movie.title){
-            db.removeMovie(movie.title);
+            db.removeMovie(movie);
             res.status(200).json({success: true, message: 'movie deleted'});
         }
         else{
