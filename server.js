@@ -80,9 +80,9 @@ router.get('/movies', (req, res) => {
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
     } else {
         if(req.body.title == movie.title) {
-            // var movieToken = { id: movie.title };
-            // var token = jwt.sign(movieToken, process.env.UNIQUE_KEY);
-            res.status(200).json({success: true, message: 'GET movies'});
+            var movieToken = { id: movie.title };
+            var token = jwt.sign(movieToken, process.env.UNIQUE_KEY)
+            res.status(200).json({success: true, message: 'GET movies', token: token});
         }
         else{
             res.status(404).send({success: false, message: 'Query failed.'});
@@ -95,9 +95,9 @@ router.post('/movies', (req, res) => {
         title: req.body.title,
         id: undefined
     };
-    // var token = jwt.sign(newMovie, process.env.UNIQUE_KEY);
     db.saveMovie(newMovie); //no duplicate checking
-    res.status(200).json({success: true, message: 'movie saved'});
+    var token = jwt.sign(newMovie, process.env.UNIQUE_KEY);
+    res.status(200).json({success: true, message: 'movie saved', token: token});
 });
 
 router.delete('/movies', authController.isAuthenticated, (req, res) => {
