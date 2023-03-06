@@ -64,7 +64,7 @@ router.post('/signin', (req, res) => {
     } else {
         if (req.body.password == user.password) {
             var userToken = { id: user.id, username: user.username };
-            var token = jwt.sign(userToken, process.env.SECRET_KEY);
+            var token = jwt.sign(userToken, process.env.UNIQUE_KEY);
             res.json ({success: true, token: 'JWT ' + token});
         }
         else {
@@ -81,7 +81,7 @@ router.get('/movies', (req, res) => {
     } else {
         if(req.body.title == movie.title) {
             // var movieToken = { id: movie.title };
-            // var token = jwt.sign(movieToken, process.env.SECRET_KEY);
+            // var token = jwt.sign(movieToken, process.env.UNIQUE_KEY);
             res.status(200).json({success: true, message: 'GET movies'});
         }
         else{
@@ -95,7 +95,7 @@ router.post('/movies', (req, res) => {
         title: req.body.title,
         id: undefined
     };
-    // var token = jwt.sign(newMovie, process.env.SECRET_KEY);
+    // var token = jwt.sign(newMovie, process.env.UNIQUE_KEY);
     db.saveMovie(newMovie); //no duplicate checking
     res.status(200).json({success: true, message: 'movie saved'});
 });
@@ -125,7 +125,7 @@ router.put('/movies', authJwtController.isAuthenticated, (req, res) => {
         if(req.body.title == movie.title){
             db.updateMovie(movie.id, movie);
             var movieToken = {title: movie.title};
-            var token = jwt.sign(movieToken, process.env.SECRET_KEY)
+            var token = jwt.sign(movieToken, process.env.UNIQUE_KEY)
             res.status(200).json({success: true, message: 'movie updated'});
         }
         else{
