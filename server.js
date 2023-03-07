@@ -91,10 +91,13 @@ router.get('/movies', (req, res) => {
 });
 
 router.post('/movies', (req, res) => {
-    var newMovie = {
-        title: req.body.title,
-        id: undefined
-    };
+    if(!req.body.title){
+        res.json({success: false, msg: 'Please include movie title.'})
+    }else {
+        var newMovie = {
+            title: req.body.title
+        };
+    }
     db.saveMovie(newMovie); //no duplicate checking
     var token = jwt.sign(newMovie, process.env.UNIQUE_KEY);
     res.status(200).json({success: true, message: 'movie saved', token: token});
@@ -126,7 +129,7 @@ router.put('/movies', authJwtController.isAuthenticated, (req, res) => {
             db.updateMovie(movie.id, movie);
             var movieToken = {title: movie.title};
             var token = jwt.sign(movieToken, process.env.UNIQUE_KEY)
-            res.status(200).json({success: true, message: 'movie updated'});
+            res.status(200).json({success: true, message: 'movie updated', token: token});
         }
         else{
         res.status(404).send({success: false, message: 'Query failed. Movie not found.'});
